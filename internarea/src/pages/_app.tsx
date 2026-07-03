@@ -12,10 +12,39 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LanguageProvider } from "@/context/LanguageContext";
 import axios from "axios";
 
+let cachedApiUrl: string | null = null;
+
+async function getApiBaseUrl() {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "http://localhost:5000/api";
+  }
+  
+  if (cachedApiUrl) return cachedApiUrl;
+  
+  try {
+    const response = await fetch(
+      "https://raw.githubusercontent.com/akshaymaddi786-ctrl/final-internarea/main/backend_url.txt"
+    );
+    const url = await response.text();
+    cachedApiUrl = url.trim() + "/api";
+    return cachedApiUrl;
+  } catch (error) {
+    console.error("Failed to fetch dynamic backend URL, falling back to default:", error);
+    return "http://localhost:5000/api";
+  }
+}
+
 if (typeof window !== "undefined") {
-  axios.interceptors.request.use((config) => {
-    if (config.url && (config.url.includes("loca.lt") || config.url.includes("localtunnel"))) {
-      config.headers["Bypass-Tunnel-Reminder"] = "true";
+  axios.interceptors.request.use(async (config) => {
+    if (config.url) {
+      const baseUrl = await getApiBaseUrl();
+      // Replace whatever host is currently in the absolute URL with the resolved base URL
+      config.url = config.url.replace(/^https?:\/\/[^\/]+\/api/, baseUrl);
+      
+      // Add bypass header if it is a localtunnel URL
+      if (config.url.includes("loca.lt") || config.url.includes("localtunnel")) {
+        config.headers["Bypass-Tunnel-Reminder"] = "true";
+      }
     }
     return config;
   });
