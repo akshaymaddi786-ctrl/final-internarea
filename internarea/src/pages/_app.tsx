@@ -10,6 +10,14 @@ import { login, logout } from "@/Feature/Userslice";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LanguageProvider } from "@/context/LanguageContext";
+import axios from "axios";
+
+if (typeof window !== "undefined") {
+  axios.interceptors.request.use((config) => {
+    config.headers["Bypass-Tunnel-Reminder"] = "true";
+    return config;
+  });
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   function AuthListener() {
