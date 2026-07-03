@@ -23,7 +23,7 @@ async function getApiBaseUrl() {
   
   try {
     const response = await fetch(
-      "https://raw.githubusercontent.com/akshaymaddi786-ctrl/final-internarea/main/backend_url.txt"
+      `https://raw.githubusercontent.com/akshaymaddi786-ctrl/final-internarea/main/backend_url.txt?t=${Date.now()}`
     );
     const url = await response.text();
     cachedApiUrl = url.trim() + "/api";
