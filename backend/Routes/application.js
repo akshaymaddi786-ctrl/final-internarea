@@ -34,9 +34,9 @@ router.get("/:id", async (req, res) => {
   try {
     const data = await application.findById(id);
     if (!data) {
-      res.status(404).json({ error: "application not found" });
+      return res.status(404).json({ error: "application not found" });
     }
-    res.json(data).status(200);
+    return res.status(200).json(data);
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "internal server error" });

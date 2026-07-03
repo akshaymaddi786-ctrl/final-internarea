@@ -39,9 +39,9 @@ router.get("/:id", async (req, res) => {
   try {
     const data = await Internship.findById(id);
     if (!data) {
-      res.status(404).json({ error: "internship not found" });
+      return res.status(404).json({ error: "internship not found" });
     }
-    res.json(data).status(200);
+    return res.status(200).json(data);
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "internal server error" });
