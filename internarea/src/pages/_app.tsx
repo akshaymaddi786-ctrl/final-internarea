@@ -14,7 +14,9 @@ import axios from "axios";
 
 if (typeof window !== "undefined") {
   axios.interceptors.request.use((config) => {
-    config.headers["Bypass-Tunnel-Reminder"] = "true";
+    if (config.url && (config.url.includes("loca.lt") || config.url.includes("localtunnel"))) {
+      config.headers["Bypass-Tunnel-Reminder"] = "true";
+    }
     return config;
   });
 }
