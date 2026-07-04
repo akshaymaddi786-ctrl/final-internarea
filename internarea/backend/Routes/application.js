@@ -25,6 +25,11 @@ async function getUserSubscription(userId) {
         expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       });
       await subscription.save();
+    } else if (new Date() > subscription.expiryDate) {
+      subscription.applicationsUsed = 0;
+      subscription.startDate = new Date();
+      subscription.expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      await subscription.save();
     }
   }
   return subscription;

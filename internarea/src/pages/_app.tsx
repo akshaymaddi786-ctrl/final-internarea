@@ -12,26 +12,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LanguageProvider } from "@/context/LanguageContext";
 import axios from "axios";
 
-let cachedApiUrl: string | null = null;
-
 async function getApiBaseUrl() {
-  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    return "http://localhost:5000/api";
+  if (typeof window !== "undefined") {
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+      return "http://localhost:5000/api";
+    }
+    return `${window.location.origin}/api`;
   }
-  
-  if (cachedApiUrl) return cachedApiUrl;
-  
-  try {
-    const response = await fetch(
-      `https://raw.githubusercontent.com/akshaymaddi786-ctrl/final-internarea/main/backend_url.txt?t=${Date.now()}`
-    );
-    const url = await response.text();
-    cachedApiUrl = url.trim() + "/api";
-    return cachedApiUrl;
-  } catch (error) {
-    console.error("Failed to fetch dynamic backend URL, falling back to default:", error);
-    return "http://localhost:5000/api";
-  }
+  return "/api";
 }
 
 if (typeof window !== "undefined") {
